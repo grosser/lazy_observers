@@ -1,4 +1,9 @@
-Makes Activerecord Observers lazy, do not load model on startup and only listen once a model got loaded.
+Makes Activerecord Observers lazy.
+
+They do not load models when observers are loaded to</br>
+reduce application load time (faster boot + faster tests)
+
+Works on rails 2.3 + 3.0 (not 3.2)
 
 Install
 =======
@@ -22,9 +27,23 @@ Usage
       end
     end
 
-### Debug which classes get loaded
+### Catch models that are loaded in application startup.
 
     LazyObservers.debug_active_record_loading
+
+`script/console` or `rails c`
+
+### Verify you did not misspell
+Loads all classes registered via observers, to make sure you did not misspell</br>
+(negates the effect of lazyness, so only use for debugging)
+
+
+    LazyObservers.check_classes
+
+
+# TODO
+ - Rails 3.0: does not work for models that are loaded before the observers
+ - Rails 3.2: blows up
 
 Author
 ======

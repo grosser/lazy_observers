@@ -1,6 +1,7 @@
 require 'bundler/gem_tasks'
+require 'appraisal'
 
-task :default do
+task :spec do
   sh "rspec spec/"
 end
 
@@ -19,4 +20,8 @@ rule /^version:bump:.*/ do |t|
   File.open(file,'w'){|f| f.write(version_file.sub(old_version, new_version)) }
 
   sh "bundle && git add #{file} Gemfile.lock && git commit -m 'bump version to #{new_version}'"
+end
+
+task :default do
+  sh "bundle exec rake appraisal:install && bundle exec rake appraisal spec"
 end

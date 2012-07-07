@@ -39,8 +39,8 @@ describe LazyObservers do
     defined?(InheritedProduct).should == nil
     require File.expand_path("../app/products", __FILE__)
 
-    # no duplicates
-    ProductObserver.instance.observed_classes.flatten.should == Set.new([Product, InheritedProduct])
+    # no duplicates (sets are weirdly nested :/ )
+    ProductObserver.instance.observed_classes.map{|x| x.is_a?(Set) ? x.to_a : x }.flatten.map{|x| x.is_a?(Set) ? x.to_a : x }.flatten.should == [Product, InheritedProduct]
 
     # for inherited
     ProductObserver.instance.called.should == []
