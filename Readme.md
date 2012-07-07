@@ -7,7 +7,24 @@ Install
 
 Usage
 =====
-    CODE EXAMPLE
+
+    class FooObserver < ActiveRecord::Observer
+      lazy_observe "User", "Foo::Bar"
+
+      ...
+    end
+
+### Extend models from gems after they are loaded
+
+    LazyObservers.on_load("Arturo::Feature") do |klass|
+      Arturo::Feature.class_eval do
+        ... funky hacks ...
+      end
+    end
+
+### Debug which classes get loaded
+
+    LazyObservers.debug_active_record_loading
 
 Author
 ======

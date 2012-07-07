@@ -22,4 +22,8 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table :products do |t|
     t.string :title
   end
+
+  create_table :groups do |t|
+    t.string :name
+  end
 end

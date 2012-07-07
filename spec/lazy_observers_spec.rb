@@ -60,4 +60,13 @@ describe LazyObservers do
       require File.expand_path("../app/stupid_observer", __FILE__)
     }.to raise_error(/not classes or symbols/i)
   end
+
+  it "calls callback when matching class is loaded" do
+    loaded = []
+    LazyObservers.on_load("Group") do |klass|
+      loaded << klass
+    end
+    require File.expand_path("../app/groups", __FILE__)
+    loaded.should == [Group]
+  end
 end
