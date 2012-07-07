@@ -2,7 +2,7 @@ Make Activerecord Observers not load observed models -> faster/safer environment
  - faster tests + console
  - able to boot environment without/with empty/with old database
 
-Works on rails 2.3 + 3.0 (not 3.2)
+Works on rails 2.3 + 3.0 (not yet 3.2)
 
 Install
 =======
