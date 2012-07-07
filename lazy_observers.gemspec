@@ -9,4 +9,5 @@ Gem::Specification.new name, LazyObservers::VERSION do |s|
   s.homepage = "http://github.com/grosser/#{name}"
   s.files = `git ls-files`.split("\n")
   s.license = 'MIT'
+  s.add_runtime_dependency "activerecord", "~>2.3.14"
 end

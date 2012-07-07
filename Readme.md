@@ -2,11 +2,8 @@ Makes Activerecord Observers lazy, do not load model on startup and only listen 
 
 Install
 =======
+
     gem install lazy_observers
-Or
-
-    rails plugin install git://github.com/grosser/lazy_observers.git
-
 
 Usage
 =====
