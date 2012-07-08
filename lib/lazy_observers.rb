@@ -52,7 +52,8 @@ module LazyObservers
   end
 end
 
-ActiveRecord::Base.send(:subclasses).each{|klass| LazyObservers.register_observed(klass) }
+descendants = (ActiveRecord::VERSION::MAJOR > 2 ? :descendants : :subclasses)
+ActiveRecord::Base.send(descendants).each{|klass| LazyObservers.register_observed(klass) }
 
 ActiveRecord::Observer.class_eval do
   def self.lazy_observe(*classes)

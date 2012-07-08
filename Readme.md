@@ -2,8 +2,6 @@ Make Activerecord Observers not load observed models -> faster/safer environment
  - faster tests + console
  - able to boot environment without/with empty/with old database
 
-Works on rails 2.3 + 3.0 (not yet 3.2)
-
 Install
 =======
 
@@ -38,11 +36,6 @@ Loads all classes registered via observers, to make sure you did not misspell</b
 
 
     LazyObservers.check_classes
-
-
-# TODO
- - Rails 3.0: does not work for models that are loaded before the observers
- - Rails 3.2: blows up
 
 Author
 ======
