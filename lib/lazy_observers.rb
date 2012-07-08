@@ -3,7 +3,7 @@ require 'active_record'
 require 'active_record/observer'
 
 module LazyObservers
-  def self.register_observed(klass)
+  def self.observed_loaded(klass)
     class_name = klass.name
     loaded << [klass, class_name]
     observers.each do |observer, observed|
@@ -12,19 +12,19 @@ module LazyObservers
     (on_load_callbacks[class_name]||[]).each{|block| block.call(klass) }
   end
 
-  def self.register_observer_instance(observer, classes)
+  def self.observer_loaded(observer, classes)
+    observers[observer] = classes
+  end
+
+  def self.observer_ready(observer, classes)
     loaded.each do |klass, name|
       connect!(observer, klass) if classes.include?(name)
     end
   end
 
-  def self.register_observer_class(observer, classes)
-    observers[observer] = classes
-  end
-
-  def self.on_load(class_name, &block)
-    on_load_callbacks[class_name] ||= []
-    on_load_callbacks[class_name] << block
+  def self.on_load(observed, &block)
+    on_load_callbacks[observed] ||= []
+    on_load_callbacks[observed] << block
   end
 
   # to check you did not specify a class that does not exist
@@ -51,15 +51,20 @@ module LazyObservers
   end
 
   def self.connect!(observer, klass)
-    @connected ||= {}
-    return if @connected[[observer, klass]]
-    @connected[[observer, klass]] = true
+    return if connected?(observer, klass)
     observer.observed_class_inherited(klass)
+  end
+
+  def self.connected?(observer, klass)
+    @connected ||= {}
+    return true if @connected[[observer, klass]]
+    @connected[[observer, klass]] = true
+    false
   end
 
   module InheritedNotifier
     def inherited(subclass)
-      LazyObservers.register_observed subclass
+      LazyObservers.observed_loaded subclass
       super
     end
   end
@@ -77,13 +82,13 @@ module LazyObservers
 end
 
 descendants = (ActiveRecord::VERSION::MAJOR > 2 ? :descendants : :subclasses)
-ActiveRecord::Base.send(descendants).each{|klass| LazyObservers.register_observed(klass) }
+ActiveRecord::Base.send(descendants).each{|klass| LazyObservers.observed_loaded(klass) }
 
 ActiveRecord::Observer.class_eval do
   def self.lazy_observe(*classes)
     raise "pass class names, not classes or symbols!" unless classes.all?{|klass| klass.is_a?(String) }
     define_method(:observed_classes) { Set.new } # prevent default of PostObserver -> Post
-    LazyObservers.register_observer_class self, classes
+    LazyObservers.observer_loaded self, classes
     define_method(:lazy_observed_classes) { Set.new(classes) }
   end
 
@@ -92,7 +97,7 @@ ActiveRecord::Observer.class_eval do
   def initialize
     initialize_without_lazy
     if defined?(lazy_observed_classes)
-      LazyObservers.register_observer_instance(self, lazy_observed_classes)
+      LazyObservers.observer_ready(self, lazy_observed_classes)
     end
   end
 end
