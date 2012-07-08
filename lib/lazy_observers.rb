@@ -12,11 +12,14 @@ module LazyObservers
     (on_load_callbacks[class_name]||[]).each{|block| block.call(klass) }
   end
 
-  def self.register_observer(observer, classes)
-    observers[observer.class] = classes
+  def self.register_observer_instance(observer, classes)
     loaded.each do |klass, name|
       connect!(observer, klass) if classes.include?(name)
     end
+  end
+
+  def self.register_observer_class(observer, classes)
+    observers[observer] = classes
   end
 
   def self.on_load(class_name, &block)
@@ -48,6 +51,9 @@ module LazyObservers
   end
 
   def self.connect!(observer, klass)
+    @connected ||= {}
+    return if @connected[[observer, klass]]
+    @connected[[observer, klass]] = true
     observer.observed_class_inherited(klass)
   end
 
@@ -77,14 +83,16 @@ ActiveRecord::Observer.class_eval do
   def self.lazy_observe(*classes)
     raise "pass class names, not classes or symbols!" unless classes.all?{|klass| klass.is_a?(String) }
     define_method(:observed_classes) { Set.new } # prevent default of PostObserver -> Post
+    LazyObservers.register_observer_class self, classes
     define_method(:lazy_observed_classes) { Set.new(classes) }
   end
 
   # since AR uses respond_to? on the observer we need our observer to be fully defined before registering
+  alias_method :initialize_without_lazy, :initialize
   def initialize
-    super
+    initialize_without_lazy
     if defined?(lazy_observed_classes)
-      LazyObservers.register_observer(self, lazy_observed_classes)
+      LazyObservers.register_observer_instance(self, lazy_observed_classes)
     end
   end
 end

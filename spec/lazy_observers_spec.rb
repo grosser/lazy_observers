@@ -2,6 +2,7 @@ require "spec_helper"
 require File.expand_path("../app/user_observer", __FILE__)
 require File.expand_path("../app/post_observer", __FILE__)
 require File.expand_path("../app/product_observer", __FILE__)
+require File.expand_path("../app/non_lazy_movie_observer", __FILE__)
 
 describe LazyObservers do
   it "has a VERSION" do
@@ -62,7 +63,9 @@ describe LazyObservers do
   end
 
   it "does not break normal observers" do
-
+    NonLazyMovieObserver.instance.called.clear # in case other specs ran first
+    movie = Movie.create!
+    NonLazyMovieObserver.instance.called.should == [[:after_create, [movie]], [:after_update, [movie]]]
   end
 
   it "calls callback when matching class is loaded" do

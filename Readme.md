@@ -40,6 +40,7 @@ Loads all classes registered via observers, to make sure you did not misspell</b
 TIPS
 ====
  - do not use observe and lazy_observe in the same observer (and if you have to, use observe after lay_observe)
+ - do not use Model classes with class-methods of the observer e.g. class FooObserver; Foo.something{}; def after_update; end; end
 
 Author
 ======
