@@ -73,9 +73,9 @@ module LazyObservers
 
   module InheritedDebugger
     def inherited(subclass)
-      @inherited_counter ||= 0
-      @inherited_counter += 1
-      puts "##{@inherited_counter} #{subclass}"
+      $lazy_observers_inherited_counter ||= 0
+      $lazy_observers_inherited_counter += 1
+      puts "##{$lazy_observers_inherited_counter} #{subclass}"
       puts caller
       puts "-" * 72
       super
