@@ -61,6 +61,10 @@ describe LazyObservers do
     }.to raise_error(/not classes or symbols/i)
   end
 
+  it "does not break normal observers" do
+
+  end
+
   it "calls callback when matching class is loaded" do
     loaded = []
     LazyObservers.on_load("Group") do |klass|

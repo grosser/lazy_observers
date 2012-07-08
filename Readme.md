@@ -37,6 +37,10 @@ Loads all classes registered via observers, to make sure you did not misspell</b
 
     LazyObservers.check_classes
 
+TIPS
+====
+ - do not use observe and lazy_observe in the same observer (and if you have to, use observe after lay_observe)
+
 Author
 ======
 [Michael Grosser](http://grosser.it)<br/>
