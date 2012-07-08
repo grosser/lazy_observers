@@ -9,7 +9,7 @@ module LazyObservers
     observers.each do |observer, observed|
       connect!(observer, klass) if observed.include?(class_name)
     end
-    (on_loads[class_name]||[]).each{|block| block.call(klass) }
+    (on_load_callbacks[class_name]||[]).each{|block| block.call(klass) }
   end
 
   def self.register_observer(observer, classes)
@@ -20,8 +20,8 @@ module LazyObservers
   end
 
   def self.on_load(class_name, &block)
-    on_loads[class_name] ||= []
-    on_loads[class_name] << block
+    on_load_callbacks[class_name] ||= []
+    on_load_callbacks[class_name] << block
   end
 
   # to check you did not specify a class that does not exist
@@ -35,7 +35,7 @@ module LazyObservers
 
   private
 
-  def self.on_loads
+  def self.on_load_callbacks
     @on_loads ||= {}
   end
 
@@ -50,20 +50,7 @@ module LazyObservers
   def self.connect!(observer, klass)
     observer.instance.observed_class_inherited(klass)
   end
-end
 
-descendants = (ActiveRecord::VERSION::MAJOR > 2 ? :descendants : :subclasses)
-ActiveRecord::Base.send(descendants).each{|klass| LazyObservers.register_observed(klass) }
-
-ActiveRecord::Observer.class_eval do
-  def self.lazy_observe(*classes)
-    raise "pass class names, not classes or symbols!" unless classes.all?{|klass| klass.is_a?(String) }
-    define_method(:observed_classes) { Set.new }
-    LazyObservers.register_observer self, classes
-  end
-end
-
-module LazyObservers
   module InheritedNotifier
     def inherited(subclass)
       LazyObservers.register_observed subclass
@@ -80,6 +67,17 @@ module LazyObservers
       puts "-" * 72
       super
     end
+  end
+end
+
+descendants = (ActiveRecord::VERSION::MAJOR > 2 ? :descendants : :subclasses)
+ActiveRecord::Base.send(descendants).each{|klass| LazyObservers.register_observed(klass) }
+
+ActiveRecord::Observer.class_eval do
+  def self.lazy_observe(*classes)
+    raise "pass class names, not classes or symbols!" unless classes.all?{|klass| klass.is_a?(String) }
+    define_method(:observed_classes) { Set.new }
+    LazyObservers.register_observer self, classes
   end
 end
 
