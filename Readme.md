@@ -19,7 +19,7 @@ Usage
 ### Extend models from gems after they are loaded
 
     LazyObservers.on_load("Arturo::Feature") do |klass|
-      Arturo::Feature.class_eval do
+      klass.class_eval do
         ... funky hacks ...
       end
     end
@@ -39,6 +39,7 @@ Loads all classes registered via observers, to make sure you did not misspell</b
 
 TIPS
 ====
+ - .on_load is called before all methods are defined on the baseclass, so they might not be defined
  - do not use observe and lazy_observe in the same observer (and if you have to, use observe after lay_observe)
  - do not use Model classes with class-methods of the observer e.g. class FooObserver; Foo.something{}; def after_update; end; end
 

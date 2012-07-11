@@ -68,12 +68,34 @@ describe LazyObservers do
     NonLazyMovieObserver.instance.called.should == [[:after_create, [movie]], [:after_update, [movie]]]
   end
 
-  it "calls callback when matching class is loaded" do
-    loaded = []
-    LazyObservers.on_load("Group") do |klass|
-      loaded << klass
+  context "#on_load" do
+    it "calls callback when matching class is loaded after block is defined" do
+      loaded = []
+      LazyObservers.on_load("T3") do |klass|
+        loaded << klass
+      end
+      require File.expand_path("../app/t3", __FILE__)
+      loaded.should == [T3]
     end
-    require File.expand_path("../app/groups", __FILE__)
-    loaded.should == [Group]
+
+    it "calls callback when matching class is loaded before block is defined" do
+      loaded = []
+      LazyObservers.on_load("T2") do |klass|
+        loaded << klass
+      end
+      require File.expand_path("../app/t2", __FILE__)
+      loaded.should == [T2]
+    end
+
+    it "can use classmethods when on_load is called" do
+      pending do
+        loaded = []
+        LazyObservers.on_load("T1") do |klass|
+          loaded << klass.xxx
+        end
+        require File.expand_path("../app/t1", __FILE__)
+        loaded.should == [111]
+      end
+    end
   end
 end
