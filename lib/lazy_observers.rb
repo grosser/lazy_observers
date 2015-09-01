@@ -1,6 +1,7 @@
 require 'lazy_observers/version'
 require 'active_record'
 require 'active_record/observer'
+require 'lazy_observers/railtie' if defined?(Rails)
 
 module LazyObservers
   def self.observed_loaded(klass)
@@ -34,6 +35,11 @@ module LazyObservers
 
   def self.debug_active_record_loading
     ActiveRecord::Base.send(:extend, LazyObservers::InheritedDebugger)
+  end
+
+  def self.clear
+    @observers = {}
+    @loaded = []
   end
 
   private
