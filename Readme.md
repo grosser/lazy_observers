@@ -2,6 +2,22 @@ Make Activerecord Observers not load observed models -> faster/safer environment
  - faster tests + console
  - able to boot environment without/with empty/with old database
 
+Recommended: turn your observers into modules
+
+```Ruby
+module CachingObserver
+  def self.included(base)
+    this = self
+    base.after_save { |record| this.do_something(record); true }
+  end
+
+  def self.do_something(record)
+     ... do something ...
+  end
+end
+```
+
+
 Install
 =======
 
