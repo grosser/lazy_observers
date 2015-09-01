@@ -1,6 +1,6 @@
 require 'lazy_observers/version'
 require 'active_record'
-require 'active_record/observer'
+require 'lazy_observers/rails_observer'
 
 module LazyObservers
   def self.observed_loaded(klass)
