@@ -1,6 +1,6 @@
 require 'lazy_observers/version'
 require 'active_record'
-require 'active_record/observer'
+require 'lazy_observers/rails_observer'
 require 'lazy_observers/railtie' if defined?(Rails)
 
 module LazyObservers
@@ -87,8 +87,7 @@ module LazyObservers
   end
 end
 
-descendants = (ActiveRecord::VERSION::MAJOR > 2 ? :descendants : :subclasses)
-ActiveRecord::Base.send(descendants).each{|klass| LazyObservers.observed_loaded(klass) }
+ActiveRecord::Base.send(:descendants).each{|klass| LazyObservers.observed_loaded(klass) }
 
 ActiveRecord::Observer.class_eval do
   def self.lazy_observe(*classes)
