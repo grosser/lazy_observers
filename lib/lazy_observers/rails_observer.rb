@@ -2,8 +2,7 @@ if ActiveRecord::VERSION::MAJOR < 4
   require 'active_record/observer'
 else
   begin
-    require 'rails/observers/active_model/observing'
-    require 'rails/observers/activerecord/observer'
+    require 'rails/observers/activerecord/active_record'
   rescue LoadError => _
     $stderr.puts(<<-MSG)
 ERROR: Failed loading rails-observers dependencies.
