@@ -87,15 +87,13 @@ describe LazyObservers do
       loaded.should == [T2]
     end
 
-    it "can use classmethods when on_load is called" do
-      pending do
-        loaded = []
-        LazyObservers.on_load("T1") do |klass|
-          loaded << klass.xxx
-        end
-        require File.expand_path("../app/t1", __FILE__)
-        loaded.should == [111]
+    it "can use classmethods when on_load is called", :pending => true do
+      loaded = []
+      LazyObservers.on_load("T1") do |klass|
+        loaded << klass.xxx
       end
+      require File.expand_path("../app/t1", __FILE__)
+      loaded.should == [111]
     end
   end
 end
