@@ -47,8 +47,8 @@ DEPENDENCIES
   bump
   lazy_observers!
   rake
-  rspec (~> 2)
+  rspec
   sqlite3
 
 BUNDLED WITH
-   1.10.6
+   1.13.3

@@ -1,7 +1,7 @@
 PATH
   remote: ../
   specs:
-    lazy_observers (0.1.0)
+    lazy_observers (0.2.0)
       activerecord
 
 GEM
@@ -46,8 +46,8 @@ DEPENDENCIES
   bump
   lazy_observers!
   rake
-  rspec (~> 2)
+  rspec
   sqlite3
 
 BUNDLED WITH
-   1.10.6
+   1.13.3
