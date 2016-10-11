@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 name = "lazy_observers"
 require "#{name}/version"
 
@@ -8,6 +8,13 @@ Gem::Specification.new name, LazyObservers::VERSION do |s|
   s.email = "michael@grosser.it"
   s.homepage = "http://github.com/grosser/#{name}"
   s.files = `git ls-files`.split("\n")
-  s.license = 'MIT'
+  s.license = "MIT"
+
   s.add_runtime_dependency "activerecord"
+
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "appraisal"
+  s.add_development_dependency "bump"
 end
